@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel | Radar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container admin-container">
+        <h2>Центр Управления APEC</h2>
+        <div class="admin-actions">
+            <button onclick="runAnalysis()" class="smart-btn">✨ Smart Analysis</button>
+        </div>
+
+        <div id="ticketList" class="ticket-grid">
+            {% for ticket in tickets %}
+            <div class="ticket-card" id="t-{{ ticket.id }}">
+                <div class="card-header">
+                    <span class="room">Каб: {{ ticket.room }}</span>
+                    <span class="date">{{ ticket.date }}</span>
+                </div>
+                <div class="category">{{ ticket.category }}</div>
+                <p class="desc">{{ ticket.description }}</p>
+                <div class="footer">{{ ticket.student }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="/logout" class="logout-link">Выйти</a>
+    </div>
+
+    <script>
+        async function runAnalysis() {
+            const res = await fetch('/smart_analysis');
+            const sorted = await res.json();
+            const list = document.getElementById('ticketList');
+            list.innerHTML = '';
+            
+            sorted.forEach(t => {
+                const isHigh = t.priority === 'High';
+                list.innerHTML += `
+                    <div class="ticket-card ${isHigh ? 'priority-high' : ''}">
+                        <div class="card-header">
+                            <span class="room">${isHigh ? '🔥 ' : ''}Каб: ${t.room}</span>
+                            <span class="date">${t.date}</span>
+                        </div>
+                        <div class="category">${t.category}</div>
+                        <p class="desc">${t.description}</p>
+                        <div class="footer">${t.student}</div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
