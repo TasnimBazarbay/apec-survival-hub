@@ -2,46 +2,94 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>APEC Radar | Подать заявку</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | APEC Survival Hub</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+
     <div class="container glass-effect">
-        <header>
-            <h1>📍 APEC Radar</h1>
-            <p>Студент: {{ user.email.split('@')[0] }}</p>
-        </header>
-        
-        <form id="ticketForm">
-            <div class="input-group">
-                <input type="text" name="room" placeholder="Номер аудитории (напр. 302)" required>
-            </div>
-            <select name="category">
-                <option value="Электрика">⚡ Электрика</option>
-                <option value="Мебель">🪑 Мебель / Интерьер</option>
-                <option value="IT">💻 IT-оборудование</option>
-                <option value="Сантехника">💧 Сантехника</option>
-            </select>
-            <textarea name="description" placeholder="Опишите проблему... (напр. искрит розетка)" required></textarea>
-            <button type="submit" id="submitBtn">ОТПРАВИТЬ ЗАЯВКУ</button>
-        </form>
-        <a href="/logout" class="logout-link">Выйти</a>
+        <h2 style="text-align: center; color: var(--primary);">APEC Survival Hub</h2>
+        <p style="text-align: center; opacity: 0.7; margin-bottom: 20px;">Вход через корпоративную почту</p>
+
+        <div id="login-ui">
+            <button onclick="signInWithGoogle()" class="glow-button" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="20" alt="G">
+                Войти через Google
+            </button>
+        </div>
+
+        <div id="admin-section" class="hidden" style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;">
+            <p style="font-size: 0.8rem; color: var(--primary); text-align: center;">Введите код администратора:</p>
+            <input type="password" id="admin_code" placeholder="Код доступа">
+            <button onclick="verifyAdmin()" class="glow-button" style="margin-top: 10px;">ПОДТВЕРДИТЬ</button>
+        </div>
     </div>
 
     <script>
-        document.getElementById('ticketForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "ОТПРАВЛЯЕМ...";
-            
-            const formData = new FormData(e.target);
-            const res = await fetch('/submit', { method: 'POST', body: formData });
-            const data = await res.json();
-            
-            alert(data.message);
-            btn.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
-            if(data.status === 'success') e.target.reset();
+        // ИСПРАВЛЕННЫЙ КЛЮЧ (wuiT9 - маленькая i)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6joyWuIT9M44dbX_i1jbmM-nFMGUwK4w",
+            authDomain: "apecsurvivalhub.firebaseapp.com",
+            projectId: "apecsurvivalhub",
+            storageBucket: "apecsurvivalhub.firebasestorage.app",
+            messagingSenderId: "528195180456",
+            appId: "1:528195180456:web:c73ea9aa6e22a0251eaf9d",
+            measurementId: "G-FVX9MMC406"
         };
+
+        firebase.initializeApp(firebaseConfig);
+        let userData = null;
+
+        async function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({ hd: 'apec.edu.kz' });
+
+            try {
+                const result = await firebase.auth().signInWithPopup(provider);
+                userData = {
+                    email: result.user.email,
+                    name: result.user.displayName
+                };
+
+                // Проверка на админ-почту (Тасним)
+                if (userData.email === 'ibazarbai25@apec.edu.kz') {
+                    document.getElementById('login-ui').classList.add('hidden');
+                    document.getElementById('admin-section').classList.remove('hidden');
+                } else {
+                    sendAuthToServer('student');
+                }
+            } catch (error) {
+                alert("Ошибка: " + error.message);
+            }
+        }
+
+        function verifyAdmin() {
+            const code = document.getElementById('admin_code').value;
+            if (code === 'admin2026') {
+                sendAuthToServer('admin');
+            } else {
+                alert("Неверный код доступа!");
+            }
+        }
+
+        async function sendAuthToServer(role) {
+            const response = await fetch('/auth_firebase', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: userData.email,
+                    name: userData.name,
+                    role: role
+                })
+            });
+
+            if (response.ok) {
+                window.location.href = (role === 'admin') ? "/admin" : "/";
+            }
+        }
     </script>
 </body>
 </html>
