@@ -1,0 +1,128 @@
+:root {
+    --primary: #00f2ff;
+    --danger: #ff0055;
+    --bg: #0a0a0c;
+    --card: #15151a;
+    --text: #e0e0e0;
+    --accent: #7000ff;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background: var(--card);
+    padding: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid #2d2d35;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+}
+
+.admin-container {
+    max-width: 1000px;
+}
+
+.glass-effect {
+    background: rgba(21, 21, 26, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+h1, h2 {
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+    text-align: center;
+    text-transform: uppercase;
+}
+
+input, select, textarea {
+    width: 100%;
+    background: #1e1e24;
+    border: 1px solid #333;
+    color: white;
+    padding: 14px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+button {
+    background: var(--primary);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+button:hover {
+    box-shadow: 0 0 20px var(--primary);
+    transform: translateY(-2px);
+}
+
+.smart-btn {
+    background: linear-gradient(45deg, var(--accent), var(--primary));
+    color: white;
+    margin-bottom: 25px;
+}
+
+/* ВАЖНО: скрытие элементов */
+.hidden {
+    display: none !important;
+}
+
+/* Стили для карточек админа */
+.ticket-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.ticket-card {
+    background: #1e1e24;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* Анимация для критических заявок */
+.priority-high {
+    border: 1px solid var(--danger);
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 5px rgba(255, 0, 85, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(255, 0, 85, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(255, 0, 85, 0.2); }
+}
+
+.logout-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: var(--danger);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
