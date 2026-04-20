@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>APEC Radar | Подать заявку</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container glass-effect">
+        <header>
+            <h1>📍 APEC Radar</h1>
+            <p>Студент: {{ user.email.split('@')[0] }}</p>
+        </header>
+        
+        <form id="ticketForm">
+            <div class="input-group">
+                <input type="text" name="room" placeholder="Номер аудитории (напр. 302)" required>
+            </div>
+            <select name="category">
+                <option value="Электрика">⚡ Электрика</option>
+                <option value="Мебель">🪑 Мебель / Интерьер</option>
+                <option value="IT">💻 IT-оборудование</option>
+                <option value="Сантехника">💧 Сантехника</option>
+            </select>
+            <textarea name="description" placeholder="Опишите проблему... (напр. искрит розетка)" required></textarea>
+            <button type="submit" id="submitBtn">ОТПРАВИТЬ ЗАЯВКУ</button>
+        </form>
+        <a href="/logout" class="logout-link">Выйти</a>
+    </div>
+
+    <script>
+        document.getElementById('ticketForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "ОТПРАВЛЯЕМ...";
+            
+            const formData = new FormData(e.target);
+            const res = await fetch('/submit', { method: 'POST', body: formData });
+            const data = await res.json();
+            
+            alert(data.message);
+            btn.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
+            if(data.status === 'success') e.target.reset();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+    "users": [
+        {
+            "email": "ibazarbai25@apec.edu.kz",
+            "password": "tasnimbazarbayy_004",
+            "role": "admin"
+        },
+        {
+            "email": "idzhanai25@apec.edu.kz",
+            "password": "dzhanai2025",
+            "role": "admin"
+        }
+    ],
+    "tickets": [
+        {
+            "id": 1,
+            "student": "ibazarbai25@apec.edu.kz",
+            "room": "234",
+            "category": "Электрика",
+            "description": "искрит разетка",
+            "date": "20.04 18:21",
+            "status": "pending"
+        }
+    ]
+}
